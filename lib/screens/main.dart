@@ -54,19 +54,9 @@ enum ListCode {
 class ChatController extends GetxController {
   static ChatController get to => Get.put(ChatController());
 
-  final rooms = <IRoom>[
-    IRoom(id: '1', name: 'General'),
-    IRoom(id: '2', name: 'Tech Talk'),
-    IRoom(id: '3', name: 'Random'),
-  ].obs;
+  final rooms = <IRoom>[].obs;
   final room = IRoom(id: '1', name: 'General').obs;
-
-  final users = <IUser>[
-    IUser(id: '1', name: 'Alice', avatarUrl: 'https://example.com/alice.jpg'),
-    IUser(id: '2', name: 'Bob', avatarUrl: 'https://example.com/bob.jpg'),
-    IUser(
-        id: '3', name: 'Charlie', avatarUrl: 'https://example.com/charlie.jpg'),
-  ].obs;
+  final users = <IUser>[].obs;
 
   void addRoom(String name) {
     final newRoom = IRoom(id: (rooms.length + 1).toString(), name: name);
@@ -99,6 +89,7 @@ class ChatController extends GetxController {
       messageList.where((message) => message.roomId == room.value.id).toList();
 
   final textController = TextEditingController();
+  final listMessageCtr = ScrollController();
 
   final newMessage = ''.obs;
   submitMessage(IRoom room, String content) {
@@ -114,6 +105,14 @@ class ChatController extends GetxController {
       messageList.add(message);
       newMessage.value = '';
       textController.clear();
+      // Scroll to the bottom of the message list
+      if (listMessageCtr.hasClients) {
+        listMessageCtr.animateTo(
+          listMessageCtr.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
     }
   }
 }
@@ -183,7 +182,8 @@ class LeftSide extends StatelessWidget {
                 }
               }),
             ),
-            Padding(
+            Container(
+              color: Colors.black.withOpacity(0.05),
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
@@ -197,7 +197,13 @@ class LeftSide extends StatelessWidget {
                           alignment: Alignment.center,
                           padding: const EdgeInsets.all(8.0),
                           child: Icon(
-                            Icons.face,
+                            t == ListCode.user
+                                ? Icons.person
+                                : t == ListCode.room
+                                    ? Icons.chat
+                                    : t == ListCode.noti
+                                        ? Icons.notifications
+                                        : Icons.settings,
                             color: ctr.sreenView.value == t
                                 ? Colors.blue
                                 : Colors.grey,
@@ -280,6 +286,7 @@ class MessageList extends StatelessWidget {
     return Obx(
       () => ListView.builder(
         itemCount: ctr.messages.length,
+        controller: ctr.listMessageCtr,
         itemBuilder: (context, index) {
           final message = ctr.messages[index];
           return ListTile(
