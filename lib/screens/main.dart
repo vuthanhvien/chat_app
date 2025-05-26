@@ -1,3 +1,4 @@
+import 'package:chat_app/api.dart';
 import 'package:chat_app/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,8 +6,25 @@ import 'package:get/get.dart';
 class IRoom {
   final String id;
   final String name;
+  final String description;
 
-  IRoom({required this.id, required this.name});
+  IRoom({required this.id, required this.name, this.description = ''});
+
+  factory IRoom.fromJson(Map<String, dynamic> json) {
+    return IRoom(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+    };
+  }
 }
 
 class IUser {
@@ -60,9 +78,15 @@ class ChatController extends GetxController {
   final users = <IUser>[].obs;
 
   void addRoom(String name) {
-    final newRoom = IRoom(id: (rooms.length + 1).toString(), name: name);
-    rooms.add(newRoom);
-    openChat(newRoom);
+    API.to.postData('/rooms', {
+      'name': name,
+      'description': 'This is a new chat room',
+    }).then((response) {
+      rooms.add(IRoom.fromJson(response));
+      openChat(rooms.last);
+    }).catchError((error) {
+      Get.snackbar('Error', 'Failed to create room: $error');
+    });
   }
 
   void removeRoom(String id) {
@@ -73,7 +97,7 @@ class ChatController extends GetxController {
     this.room.value = room;
   }
 
-  final sreenView = ListCode.user.obs;
+  final sreenView = ListCode.room.obs;
 
   final leftWidth = 300.0.obs;
 
@@ -83,7 +107,6 @@ class ChatController extends GetxController {
     ListCode.noti,
     ListCode.setting,
   ];
-  final currentTab = ListCode.user.obs;
 
   final messageList = <IMessage>[].obs;
   List<IMessage> get messages =>
@@ -115,6 +138,29 @@ class ChatController extends GetxController {
         );
       }
     }
+  }
+
+  getRooms() async {
+    try {
+      final res = await API.to.fetchData('/rooms');
+      if (res['data'] is List) {
+        for (var r in res['data']) {
+          final room = IRoom.fromJson(r);
+          rooms.add(room);
+        }
+        rooms.refresh();
+      } else {
+        Get.snackbar('Error', 'Invalid response format');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load rooms: $e');
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    getRooms();
   }
 }
 

@@ -1,6 +1,5 @@
 import 'package:chat_app/api.dart';
 import 'package:chat_app/screens/main.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -14,27 +13,46 @@ class AuthController extends GetxController {
 
   final username = ''.obs;
   final password = ''.obs;
+  final passwordConfirm = ''.obs;
 
   final formCode = 'login'.obs;
 
-  void login() async {
+  register() async {
+    try {
+      final res = await API.to.postData(
+        '/auth/register',
+        {
+          'name': username.value,
+          'email': username.value,
+          'password': password.value,
+          'passwordConfirm': passwordConfirm.value,
+        },
+      );
+      print(res);
+      if (res.statusCode == 200) {
+        //  Navigate to main page after registration
+        print("Registration successful");
+      } else {
+        print("Registration failed: ${res.statusMessage}");
+      }
+    } catch (e) {
+      print("Error during registration: $e");
+    }
+  }
+
+  login() async {
     try {
       final res = await API.to.postData(
         '/auth/login',
         {
-          'username': username.value,
+          'email': username.value,
           'password': password.value,
         },
       );
-      if (res.statusCode == 200) {
-        // Assuming the response contains a token
-        final token = res.data['token'];
-        GetStorage().write('token', token);
-        print("Login successful, token: $token");
-        getMe(); // Fetch user data after login
-      } else {
-        print("Login failed: ${res.statusMessage}");
-      }
+      // Assuming the response contains a token
+      final token = res['token'];
+      GetStorage().write('token', token);
+      getMe(); // Fetch user data after login
     } catch (e) {
       print("Error during login: $e");
     }
@@ -48,6 +66,7 @@ class AuthController extends GetxController {
 
   getMe() async {
     final res = await API.to.fetchData('/auth/me');
+    print(res);
     isLogin.value = true;
   }
 
@@ -108,6 +127,7 @@ class LoginPage extends StatelessWidget {
                   hintText: 'Enter your password',
                 ),
                 onChanged: (value) {
+                  ctr.password.value = value;
                   // Handle password input
                 },
               ),
@@ -121,13 +141,14 @@ class LoginPage extends StatelessWidget {
                     hintText: 'Enter your password',
                   ),
                   onChanged: (value) {
+                    ctr.passwordConfirm.value = value;
                     // Handle password input
                   },
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    ctr.login();
+                    ctr.register();
                   },
                   child: const Text('Register'),
                 ),
