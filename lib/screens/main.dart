@@ -1,3 +1,4 @@
+import 'package:chat_app/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -118,17 +119,24 @@ class ChatController extends GetxController {
 }
 
 class MainScreen extends StatelessWidget {
-  //
+  final authCtr = AuthController.to;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        children: [
-          LeftSide(),
-          Expanded(
-            child: DetailChat(),
-          ),
-        ],
+      body: SafeArea(
+        child: Obx(
+          () => authCtr.isLogin.value
+              ? Row(
+                  children: [
+                    LeftSide(),
+                    Expanded(
+                      child: DetailChat(),
+                    ),
+                  ],
+                )
+              : LoginPage(),
+        ),
       ),
     );
   }
