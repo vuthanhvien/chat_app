@@ -28,13 +28,10 @@ class AuthController extends GetxController {
           'passwordConfirm': passwordConfirm.value,
         },
       );
-      print(res);
-      if (res.statusCode == 200) {
-        //  Navigate to main page after registration
-        print("Registration successful");
-      } else {
-        print("Registration failed: ${res.statusMessage}");
-      }
+      // Assuming the response contains a token
+      final token = res['token'];
+      GetStorage().write('token', token);
+      getMe(); // Fetch user data after login
     } catch (e) {
       print("Error during registration: $e");
     }
@@ -67,6 +64,9 @@ class AuthController extends GetxController {
   getMe() async {
     final res = await API.to.fetchData('/auth/me');
     print(res);
+    currentUser.value = IUser.fromJson(res);
+    currentUser.value.id = res['userId'] ?? '';
+    print("Current user: ${currentUser.value.name}");
     isLogin.value = true;
   }
 
