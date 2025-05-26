@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:chat_app/api.dart';
 import 'package:chat_app/screens/login.dart';
+import 'package:chat_app/socket.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
@@ -170,10 +171,11 @@ class ChatController extends GetxController {
   final room = IRoom.fromJson({}).obs; // Initialize with an empty room
   final users = <IUser>[].obs;
 
-  void addRoom(String name) {
+  void addRoom(String name, {String? newId}) {
     API.to.postData('/rooms', {
       'name': name,
       'description': 'This is a new chat room',
+      'userId': newId
     }).then((response) {
       rooms.add(IRoom.fromJson(response));
       openChat(rooms.last);
@@ -232,16 +234,6 @@ class ChatController extends GetxController {
       'roomId': room.id,
       'type': 'text',
       'timestamp': DateTime.now().toIso8601String(),
-    }).then((response) {
-      for (var m in messageList) {
-        if (m.id == message.id) {
-          m.status = 'sent'; // Update the status of the sent message
-        }
-        messageList.refresh();
-      }
-      // messageList.add(message);
-    }).catchError((error) {
-      Get.snackbar('Error', 'Failed to send message: $error');
     });
 
     newMessage.value = '';
@@ -292,11 +284,16 @@ class ChatController extends GetxController {
     try {
       final res = await API.to.fetchData('/rooms');
       if (res['data'] is List) {
+        rooms.clear();
         for (var r in res['data']) {
           final room = IRoom.fromJson(r);
           rooms.add(room);
         }
         rooms.refresh();
+
+        for (var room in rooms) {
+          SocketService.to.joinRoom(room.id);
+        }
       } else {
         Get.snackbar('Error', 'Invalid response format');
       }
@@ -327,6 +324,28 @@ class ChatController extends GetxController {
     super.onInit();
     getRooms();
     getUsers();
+
+    SocketService.to.onMessage((data) {
+      final message = IMessage.fromJson(data);
+      var isExit = false;
+      for (var m in messageList) {
+        if (m.id == message.id) {
+          isExit = true; // Message already exists, update it
+          m.status = 'sent'; // Update the status of the sent message
+        }
+        messageList.refresh();
+      }
+      if (!isExit) {
+        messageList.add(message);
+      }
+    });
+
+    SocketService.to.onRoomAdd((data) {
+      final room = IRoom.fromJson(data);
+      rooms.add(room);
+      rooms.refresh();
+      // openChat(room); // Automatically open the new room
+    });
   }
 }
 
@@ -456,13 +475,17 @@ class UserList extends StatelessWidget {
           final user = ctr.users[index];
           return InkWell(
             onTap: () {
-              ctr.room.value = IRoom(
-                id: const Uuid().v4(),
-                name: user.name,
-                description: 'Chat with ${user.name}',
-                userRoom: [],
-              );
-              ctr.openChat(ctr.room.value);
+              // ctr.room.value = IRoom(
+              //   id: const Uuid().v4(),
+              //   name: user.name,
+              //   description: 'Chat with ${user.name}',
+              //   userRoom: [],
+              // );
+              // ctr.openChat(ctr.room.value);
+              ctr.addRoom(
+                'user ${user.name}',
+                newId: user.id,
+              ); // Create a new room with the user
             },
             child: Container(
               padding: const EdgeInsets.all(8.0),

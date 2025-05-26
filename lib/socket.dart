@@ -2,6 +2,8 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:get/get.dart';
 
 class SocketService extends GetxService {
+  /// Creates a new instance of [SocketService].
+  static SocketService get to => Get.find<SocketService>();
   late IO.Socket socket;
 
   @override
@@ -11,9 +13,10 @@ class SocketService extends GetxService {
   }
 
   void connect() {
+    print('Connecting to socket server...');
     socket = IO.io('http://localhost:4000', <String, dynamic>{
       'transports': ['websocket'],
-      'autoConnect': false,
+      'autoConnect': true,
     });
     socket.connect();
 
@@ -24,17 +27,23 @@ class SocketService extends GetxService {
     socket.onDisconnect((_) {
       print('Disconnected from socket server');
     });
+
+    // socket.connected;
   }
 
-  void sendMessage(String room, String message) {
+  sendMessage(String room, String message) {
     socket.emit('send_message', {'room': room, 'message': message});
   }
 
-  void joinRoom(String room) {
-    socket.emit('join_room', room);
+  joinRoom(String room) {
+    socket.emit('join', room);
   }
 
-  void onMessage(Function(dynamic) callback) {
-    socket.on('receive_message', callback);
+  onMessage(Function(dynamic) callback) {
+    socket.on('message:created', callback);
+  }
+
+  onRoomAdd(Function(dynamic) callback) {
+    socket.on('room:add', callback);
   }
 }

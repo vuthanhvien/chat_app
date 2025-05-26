@@ -27,6 +27,9 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => MainScreen()),
       ],
+      initialBinding: BindingsBuilder(() {
+        Get.put(SocketService());
+      }),
     );
   }
 }

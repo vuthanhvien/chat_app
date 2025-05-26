@@ -1,5 +1,6 @@
 import 'package:chat_app/api.dart';
 import 'package:chat_app/screens/main.dart';
+import 'package:chat_app/socket.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -65,6 +66,8 @@ class AuthController extends GetxController {
     final res = await API.to.fetchData('/auth/me');
     currentUser.value = IUser.fromJson(res);
     currentUser.value.id = res['userId'] ?? '';
+
+    SocketService.to.joinRoom(currentUser.value.id);
     isLogin.value = true;
   }
 

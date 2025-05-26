@@ -28,8 +28,6 @@ class API extends GetxService {
 
   Future postData(String path, Map<String, dynamic> data) async {
     final token = GetStorage().read('token');
-    print(baseURL + path);
-    print(data);
     final response = await dio.post(
       baseURL + path,
       data: data,
