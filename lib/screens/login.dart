@@ -63,10 +63,8 @@ class AuthController extends GetxController {
 
   getMe() async {
     final res = await API.to.fetchData('/auth/me');
-    print(res);
     currentUser.value = IUser.fromJson(res);
     currentUser.value.id = res['userId'] ?? '';
-    print("Current user: ${currentUser.value.name}");
     isLogin.value = true;
   }
 

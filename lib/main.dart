@@ -1,12 +1,13 @@
 import 'package:chat_app/screens/main.dart';
+import 'package:chat_app/socket.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize GetStorage if you are using it for local storage
   await GetStorage.init();
+
   runApp(const MyApp());
 }
 

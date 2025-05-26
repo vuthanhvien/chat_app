@@ -30,7 +30,6 @@ class API extends GetxService {
     final token = GetStorage().read('token');
     print(baseURL + path);
     print(data);
-    print('Token: $token');
     final response = await dio.post(
       baseURL + path,
       data: data,

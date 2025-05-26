@@ -7,18 +7,50 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/v4.dart';
 
+class IUserRoom {
+  final String userId;
+  final String roomId;
+
+  IUserRoom({required this.userId, required this.roomId});
+
+  factory IUserRoom.fromJson(Map<String, dynamic> json) {
+    return IUserRoom(
+      userId: json['userId'] ?? '',
+      roomId: json['roomId'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'userId': userId,
+      'roomId': roomId,
+    };
+  }
+}
+
 class IRoom {
   final String id;
   final String name;
   final String description;
 
-  IRoom({required this.id, required this.name, this.description = ''});
+  final List<IUserRoom> userRoom;
+
+  IRoom({
+    required this.id,
+    required this.name,
+    this.description = '',
+    required this.userRoom,
+  });
 
   factory IRoom.fromJson(Map<String, dynamic> json) {
     return IRoom(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String? ?? '',
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      userRoom: (json['UserRoom'] ?? [])
+              ?.map<IUserRoom>((e) => IUserRoom.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 
@@ -135,7 +167,7 @@ class ChatController extends GetxController {
   static ChatController get to => Get.put(ChatController());
 
   final rooms = <IRoom>[].obs;
-  final room = IRoom(id: '1', name: 'General').obs;
+  final room = IRoom.fromJson({}).obs; // Initialize with an empty room
   final users = <IUser>[].obs;
 
   void addRoom(String name) {
@@ -182,7 +214,6 @@ class ChatController extends GetxController {
     if (content == '') {
       return;
     }
-    print('Submitting message: $content to room: ${room.id}');
     final randomId = const Uuid().v4(); // Generate a random ID for the message
     final message = IMessage(
       id: randomId,
@@ -226,26 +257,25 @@ class ChatController extends GetxController {
   }
 
   addUsers() {
-    API.to.postData(
-      '/rooms/add-user',
-      {
-        'roomId': room.value.id,
-        'userIds': users.map((u) => u.id).toList(),
-      },
-    ).then((response) {
-      print(response);
-    }).catchError((error) {
-      Get.snackbar('Error', 'Failed to load users: $error');
-    });
+    API.to
+        .postData(
+          '/rooms/add-user',
+          {
+            'roomId': room.value.id,
+            'userIds': users.map((u) => u.id).toList(),
+          },
+        )
+        .then((response) {})
+        .catchError((error) {
+          Get.snackbar('Error', 'Failed to load users: $error');
+        });
   }
 
   getMessages() {
-    print('Fetching messages for room: ${room.value.id}');
     API.to.fetchData('/messages?roomId=${room.value.id}').then((response) {
       if (response['data'] is List) {
         messageList.clear();
         for (var m in response['data']) {
-          print(m);
           final message = IMessage.fromJson(m);
           messageList.add(message);
         }
@@ -263,7 +293,6 @@ class ChatController extends GetxController {
       final res = await API.to.fetchData('/rooms');
       if (res['data'] is List) {
         for (var r in res['data']) {
-          print(r);
           final room = IRoom.fromJson(r);
           rooms.add(room);
         }
@@ -431,6 +460,7 @@ class UserList extends StatelessWidget {
                 id: const Uuid().v4(),
                 name: user.name,
                 description: 'Chat with ${user.name}',
+                userRoom: [],
               );
               ctr.openChat(ctr.room.value);
             },
@@ -600,6 +630,12 @@ class ChatScreen extends StatelessWidget {
                           ? room.description
                           : 'No description',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                    Text(
+                      room.userRoom.isNotEmpty
+                          ? 'Members: ${room.userRoom.length}'
+                          : 'No members',
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
