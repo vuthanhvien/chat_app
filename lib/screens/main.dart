@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chat_app/api.dart';
 import 'package:chat_app/screens/login.dart';
 import 'package:flutter/material.dart';
@@ -509,6 +511,14 @@ class MessageList extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(8.0),
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 31, 162, 228),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8.0),
+                          topRight: Radius.circular(8.0),
+                          bottomLeft: Radius.circular(8.0),
+                        ),
+                      ),
                       child: Text(
                         message.content,
                         overflow: TextOverflow.ellipsis,
@@ -516,14 +526,6 @@ class MessageList extends StatelessWidget {
                           fontSize: 14,
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 31, 162, 228),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8.0),
-                          topRight: Radius.circular(8.0),
-                          bottomLeft: Radius.circular(8.0),
                         ),
                       ),
                     ),
@@ -617,37 +619,42 @@ class ChatScreen extends StatelessWidget {
         Expanded(
           child: MessageList(),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Type a message',
-                    border: OutlineInputBorder(),
+        Container(
+          color: Colors.white,
+          width: double.infinity,
+          child: Container(
+            width: min(Get.width - 300, 900),
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: 'Type a message',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      ctr.newMessage.value = value;
+                    },
+                    controller: ctr.textController,
+                    // onSubmitted: (value) {
+                    //   ctr.submitMessage(room, value);
+                    //   // Handle send message
+                    // },
+                    onEditingComplete: () {
+                      ctr.submitMessage(room, ctr.newMessage.value);
+                    },
                   ),
-                  onChanged: (value) {
-                    ctr.newMessage.value = value;
-                  },
-                  controller: ctr.textController,
-                  // onSubmitted: (value) {
-                  //   ctr.submitMessage(room, value);
-                  //   // Handle send message
-                  // },
-                  onEditingComplete: () {
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {
                     ctr.submitMessage(room, ctr.newMessage.value);
+                    // Handle send message
                   },
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () {
-                  ctr.submitMessage(room, ctr.newMessage.value);
-                  // Handle send message
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
