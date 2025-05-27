@@ -11,6 +11,8 @@ class ChatController extends GetxController {
 
   final isEditTitle = false.obs;
 
+  final userSelected = <String>[].obs;
+
   final titleController = TextEditingController();
 
   final rooms = <IRoom>[].obs;
@@ -113,19 +115,27 @@ class ChatController extends GetxController {
     // You can use a file picker to select files and then send them to the server
   }
 
-  addUsers() {
-    API.to
-        .postData(
-          '/rooms/add-user',
-          {
-            'roomId': room.value.id,
-            'userIds': users.map((u) => u.id).toList(),
-          },
-        )
-        .then((response) {})
-        .catchError((error) {
-          Get.snackbar('Error', 'Failed to load users: $error');
-        });
+  addUsers(String roomId, List<String> userIds) {
+    API.to.postData(
+      '/rooms/add-user',
+      {
+        'roomId': room.value.id,
+        'userIds': userIds,
+      },
+    ).then((response) {
+      // final room = IRoom.fromJson(response);
+      // final index = rooms.indexWhere((r) => r.id == room.id);
+      // if (index != -1) {
+      //   rooms[index] = room; // Update existing room
+      // } else {
+      //   rooms.add(room); // Add new room
+      // }
+      // rooms.refresh();
+      Get.snackbar('Success', 'Users added to the room successfully');
+      // getRooms(); // Refresh the room list
+    }).catchError((error) {
+      Get.snackbar('Error', 'Failed to load users: $error');
+    });
   }
 
   getMessages() {

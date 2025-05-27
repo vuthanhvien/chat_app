@@ -64,7 +64,7 @@ class RoomDetail extends StatelessWidget {
                             ctr.titleController.text = room.name;
                           },
                           child: Text(
-                            '${room.name}',
+                            room.name,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -75,8 +75,10 @@ class RoomDetail extends StatelessWidget {
                         room.userRoom.isNotEmpty
                             ? 'Members: ${room.userRoom.length}'
                             : 'No members',
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -86,7 +88,92 @@ class RoomDetail extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.add),
                 onPressed: () {
-                  ctr.addUsers();
+                  ctr.userSelected.value = [];
+                  // ctr.addUsers();
+                  Get.bottomSheet(
+                    Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        height: 400,
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Add Users',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(0),
+                                itemCount: ctr.users.length,
+                                itemBuilder: (context, index) {
+                                  final user = ctr.users[index];
+                                  return ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(user.avatarUrl ?? ''),
+                                    ),
+                                    title: Text(user.name),
+                                    // subtitle: Text(user.status),
+                                    onTap: () {
+                                      // // Add user to room logic
+                                      // ctr.addRoom(
+                                      //   room.name,
+                                      //   newId: user.id,
+                                      // );
+                                      // Get.back();
+                                      if (ctr.userSelected.contains(user.id)) {
+                                        ctr.userSelected.remove(user.id);
+                                      } else {
+                                        ctr.userSelected.add(user.id);
+                                      }
+                                    },
+                                    trailing: Obx(
+                                      () => Checkbox(
+                                        value:
+                                            ctr.userSelected.contains(user.id),
+                                        onChanged: (value) {
+                                          if (value == true) {
+                                            ctr.userSelected.add(user.id);
+                                          } else {
+                                            ctr.userSelected.remove(user.id);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                const Spacer(),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (ctr.userSelected.isNotEmpty) {
+                                      ctr.addUsers(
+                                        room.id,
+                                        ctr.userSelected,
+                                      );
+                                      Get.back();
+                                    } else {
+                                      Get.snackbar(
+                                        'Error',
+                                        'Please select at least one user',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                    }
+                                  },
+                                  child: const Text('Add Users'),
+                                ),
+                              ],
+                            )
+                          ],
+                        )),
+                  );
                 },
               ),
             ],
