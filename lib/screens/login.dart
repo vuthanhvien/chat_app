@@ -1,6 +1,6 @@
 import 'package:chat_app/api.dart';
 import 'package:chat_app/models/types.dart';
-import 'package:chat_app/screens/main.dart';
+import 'package:chat_app/screens/main/index.dart';
 import 'package:chat_app/socket.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -94,6 +94,11 @@ class LoginPage extends StatelessWidget {
         () => Container(
           height: 400,
           width: 400,
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

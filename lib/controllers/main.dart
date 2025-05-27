@@ -9,6 +9,10 @@ import 'package:uuid/uuid.dart';
 class ChatController extends GetxController {
   static ChatController get to => Get.put(ChatController());
 
+  final isEditTitle = false.obs;
+
+  final titleController = TextEditingController();
+
   final rooms = <IRoom>[].obs;
   List<IRoom> get roomLists => rooms.where((e) => e.type == 'group').toList();
   final room = IRoom.fromJson({}).obs; // Initialize with an empty room

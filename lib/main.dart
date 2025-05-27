@@ -1,4 +1,4 @@
-import 'package:chat_app/screens/main.dart';
+import 'package:chat_app/screens/main/index.dart';
 import 'package:chat_app/socket.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,10 +19,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: "ChatAPP",
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
         fontFamily: 'ProductSans',
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(fontSize: 14, color: Colors.white),
+          bodyLarge: TextStyle(fontSize: 14, color: Colors.white),
+          titleLarge: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
       ),
       initialRoute: '/',
       getPages: [
