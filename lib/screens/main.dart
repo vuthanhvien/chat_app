@@ -388,7 +388,7 @@ class LeftSide extends StatelessWidget {
     return Obx(() {
       return Container(
         width: ctr.leftWidth.value,
-        color: Colors.white,
+        color: const Color.fromARGB(255, 37, 35, 35),
         child: Column(
           children: [
             Container(
@@ -398,12 +398,18 @@ class LeftSide extends StatelessWidget {
                   const Expanded(
                     child: Text(
                       'ONLYFANS',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.add),
+                    icon: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
                     onPressed: () {
                       ctr.sreenView.value = ListCode.room;
                       ctr.addRoom('New Room ${ctr.rooms.length + 1}');
@@ -779,15 +785,15 @@ class Room extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             color: ctr.room.value.id == room.id
-                ? Colors.blue.withOpacity(0.1)
-                : Colors.white,
+                ? Colors.white.withOpacity(0.1)
+                : Colors.transparent,
             // borderRadius: BorderRadius.circular(8.0),
           ),
           child: Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 30,
+                height: 30,
                 decoration: BoxDecoration(
                   color: Colors.blueGrey,
                   borderRadius: BorderRadius.circular(20),
@@ -795,7 +801,7 @@ class Room extends StatelessWidget {
                 child: const Icon(
                   Icons.chat,
                   color: Colors.white,
-                  size: 18,
+                  size: 12,
                 ),
               ),
               const SizedBox(width: 8),
@@ -803,12 +809,19 @@ class Room extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(room.name, style: const TextStyle(fontSize: 14)),
+                    Text(
+                      room.name,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        // fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const Text(
                       'Last message here', // Placeholder for last message
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 12,
+                        fontSize: 10,
                       ),
                     ),
                   ],

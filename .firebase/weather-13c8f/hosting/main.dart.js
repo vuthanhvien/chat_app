@@ -39375,7 +39375,7 @@ $S:0}
 A.MW.prototype={
 m4(){this.uE()
 this.rz()},
-rz(){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e="http://209.145.51.190:4000",d=null,c="query"
+rz(){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e="https://socket.vienvu.com",d=null,c="query"
 A.lR("Connecting to socket server...")
 s=t.N
 r=t.z
@@ -39386,7 +39386,7 @@ n=p.gd2(p)
 m=$.aqk.a2(0,o)&&$.aqk.h(0,o).d.a2(0,n)
 l=J.c(q.h(0,"forceNew"),!0)||J.c(q.h(0,"force new connection"),!0)||!1===q.h(0,"multiplex")||m
 k=A.bs("io")
-if(l){$.aEI().an(B.k,"ignoring socket cache for http://209.145.51.190:4000",d,d)
+if(l){$.aEI().an(B.k,"ignoring socket cache for https://socket.vienvu.com",d,d)
 k.b=A.axP(q,e)}else{j=$.aqk.h(0,o)
 if(j==null){j=A.axP(q,e)
 $.aqk.n(0,o,j)}k.b=j}if(p.gk7(p).length!==0&&q.h(0,c)==null)q.n(0,c,p.gk7(p))
