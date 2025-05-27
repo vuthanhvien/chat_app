@@ -3,6 +3,7 @@ import 'package:chat_app/models/types.dart';
 import 'package:chat_app/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class MessageList extends StatelessWidget {
   MessageList({super.key});
@@ -81,6 +82,13 @@ class MessageList extends StatelessWidget {
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                         ),
+                      ),
+                    ),
+                    Text(
+                      DateFormat('hh:mm a').format(message.timestamp),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
                       ),
                     ),
                   ],

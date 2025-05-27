@@ -2,6 +2,7 @@ import 'package:chat_app/api.dart';
 import 'package:chat_app/models/types.dart';
 import 'package:chat_app/screens/login.dart';
 import 'package:chat_app/socket.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,11 +12,8 @@ class ChatController extends GetxController {
   static ChatController get to => Get.put(ChatController());
 
   final isEditTitle = false.obs;
-
   final userSelected = <String>[].obs;
-
   final titleController = TextEditingController();
-
   final rooms = <IRoom>[].obs;
   List<IRoom> get roomGroup => rooms.where((e) => e.type == 'group').toList();
   final room = IRoom.fromJson({}).obs; // Initialize with an empty room
@@ -49,6 +47,7 @@ class ChatController extends GetxController {
 
   void openChat(IRoom r) {
     room.value = r;
+    Get.toNamed('/chat?roomId=${r.id}', preventDuplicates: false);
     getMessages();
   }
 
@@ -64,11 +63,8 @@ class ChatController extends GetxController {
   ];
 
   final messageList = <IMessage>[].obs;
-  List<IMessage> get messages => messageList
-      .where((message) => message.roomId == room.value.id)
-      .toList()
-      .reversed
-      .toList();
+  List<IMessage> get messages =>
+      messageList.where((message) => message.roomId == room.value.id).toList();
 
   final textController = TextEditingController();
   final listMessageCtr = ScrollController();
@@ -89,6 +85,8 @@ class ChatController extends GetxController {
     );
     messageList.add(message);
     messageList.refresh();
+
+    messageList.sort((b, a) => a.timestamp.compareTo(b.timestamp));
     // create message
     API.to.postData('/messages', {
       'id': randomId,
@@ -250,6 +248,8 @@ class ChatController extends GetxController {
         }
         messageList.refresh();
       }
+      messageList.sort((b, a) => a.timestamp.compareTo(b.timestamp));
+
       if (!isExits) {
         messageList.add(message);
         Get.closeAllSnackbars();
@@ -290,14 +290,4 @@ class ChatController extends GetxController {
       // openChat(room); // Automatically open the new room
     });
   }
-
-  // void listenToWidthChanges() {
-  //   Get.width.listen((width) {
-  //     if (width < 600) {
-  //       leftWidth.value = 0; // Hide left side on small screens
-  //     } else {
-  //       leftWidth.value = 300; // Show left side on larger screens
-  //     }
-  //   });
-  // }
 }

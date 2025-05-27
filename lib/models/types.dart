@@ -127,10 +127,6 @@ class IMessage {
     this.type = 'text',
   });
 
-  String get time => DateTime.now().difference(timestamp).inMinutes < 60
-      ? '${DateTime.now().difference(timestamp).inMinutes} minutes ago'
-      : '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}';
-
   factory IMessage.fromJson(Map<String, dynamic> json) {
     return IMessage(
       id: json['id'] ?? '',

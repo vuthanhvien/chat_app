@@ -6,6 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+const randomeName = [
+  'Alice',
+  'Bob',
+  'Charlie',
+  'David',
+  'Eve',
+  'Frank',
+  'Grace',
+  'Hannah',
+  'Ian',
+  'Jack',
+];
+
 class AuthController extends GetxController {
   static AuthController get to => Get.put(AuthController());
 
@@ -18,6 +31,27 @@ class AuthController extends GetxController {
   final passwordConfirm = ''.obs;
 
   final formCode = 'login'.obs;
+
+  registerGuest() async {
+    try {
+      final res = await API.to.postData(
+        '/auth/register',
+        {
+          'name':
+              'Guest ${randomeName[DateTime.now().second % randomeName.length]}',
+          'email': 'guest_${DateTime.now()}@fake.com',
+          'password': '123123',
+          'passwordConfirm': '123123',
+        },
+      );
+      // Assuming the response contains a token
+      final token = res['token'];
+      GetStorage().write('token', token);
+      getMe(); // Fetch user data
+    } catch (e) {
+      print("Error during guest registration: $e");
+    }
+  }
 
   register() async {
     try {
@@ -92,7 +126,7 @@ class LoginPage extends StatelessWidget {
     return Center(
       child: Obx(
         () => Container(
-          height: 400,
+          height: 500,
           width: 400,
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
@@ -105,16 +139,16 @@ class LoginPage extends StatelessWidget {
             children: [
               if (ctr.formCode.value == 'login')
                 Text(
-                  'LOGIN_CHAT-APP'.tr,
+                  'Đăng Nhập APP '.toUpperCase(),
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               if (ctr.formCode.value == 'register')
                 Text(
-                  'REGISTER_CHAT-APP'.tr,
+                  'Đăng Ký APP '.toUpperCase(),
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               const SizedBox(height: 20),
-              Text('EMAIL'.tr),
+              Text('Email'.tr),
               TextField(
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -126,12 +160,12 @@ class LoginPage extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 10),
-              Text('PASSWORD'.tr),
+              Text('Mật khẩu'.tr),
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'ENTER_YOUR_PASSWORD'.tr,
+                  hintText: 'Nhập mật khẩu'.tr,
                 ),
                 onChanged: (value) {
                   ctr.password.value = value;
@@ -140,12 +174,12 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               if (ctr.formCode.value == 'register') ...[
-                Text('CONFIRM_PASSWORD'.tr),
+                Text('Mật khẩu (xác nhận)'.tr),
                 TextField(
                   obscureText: true,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'ENTER_YOUR_PASSWORD_CONFIRM'.tr,
+                    hintText: ''.tr,
                   ),
                   onChanged: (value) {
                     ctr.passwordConfirm.value = value;
@@ -157,7 +191,7 @@ class LoginPage extends StatelessWidget {
                   onPressed: () {
                     ctr.register();
                   },
-                  child: Text('REGISTER'.tr),
+                  child: Text('ĐĂNG KÝ'.tr),
                 ),
               ],
               if (ctr.formCode.value == 'login') ...[
@@ -165,36 +199,56 @@ class LoginPage extends StatelessWidget {
                   onPressed: () {
                     ctr.login();
                   },
-                  child: Text('LOGIN'.tr),
+                  child: Text('ĐĂNG NHẬP'.tr),
                 ),
               ],
               const SizedBox(height: 10),
               if (ctr.formCode.value == 'login')
                 Row(
                   children: [
-                    Text('DO_NOT_HAVE_ACCOUNT?'.tr),
+                    Text('Bạn không có tài khoản?'.tr),
                     TextButton(
                       onPressed: () {
                         ctr.formCode.value = 'register';
                         // Handle registration
                       },
-                      child: Text('REGISTER'.tr),
+                      child: Text('ĐĂNG KÝ'.tr),
                     ),
                   ],
                 ),
               if (ctr.formCode.value == 'register')
                 Row(
                   children: [
-                    Text('DID_HAVE_ACCOUNT?'.tr),
+                    Text('Bạn đã có tài khoản?'.tr),
                     TextButton(
                       onPressed: () {
                         ctr.formCode.value = 'login';
                         // Handle login
                       },
-                      child: Text('LOGIN'.tr),
+                      child: Text('ĐĂNG NHẬP'),
                     ),
                   ],
                 ),
+              const SizedBox(height: 20),
+              Container(
+                height: 2,
+                color: Colors.white.withOpacity(0.5),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Sử dụng tư cách khách'.tr),
+                  ElevatedButton(
+                    onPressed: () {
+                      // ctr.currentUser.value = IUser(id: 'guest', name: 'Guest');
+
+                      ctr.registerGuest();
+                    },
+                    child: Text('GUEST'.tr),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
