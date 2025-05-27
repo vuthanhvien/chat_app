@@ -4,8 +4,7 @@ import 'package:get_storage/get_storage.dart';
 
 // const baseURL = 'http://localhost:3000'; // Replace with your API base URL
 const baseURL = 'https://chatapi.vienvu.com'; // Replace with your API base URL
-const socketURL =
-    'http://209.145.51.190:4000'; // Replace with your API base URL
+const socketURL = 'https://socket.vienvu.com'; // Replace with your API base URL
 
 class API extends GetxService {
   // Define your API methods here

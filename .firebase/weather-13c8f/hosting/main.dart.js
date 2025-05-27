@@ -38877,7 +38877,7 @@ if(o==null)o=$.dw=new A.hv()
 o.eo(n.bN$)
 o=t.z
 s=3
-return A.O(p.as.al1(0,"http://209.145.51.190:3123"+a,null,null,null,A.awn("GET",A.ayc(A.a9(["Authorization","Bearer "+A.h(J.aG(n.e7$,"token"))],t.N,o))),null,o),$async$n8)
+return A.O(p.as.al1(0,"https://chatapi.vienvu.com"+a,null,null,null,A.awn("GET",A.ayc(A.a9(["Authorization","Bearer "+A.h(J.aG(n.e7$,"token"))],t.N,o))),null,o),$async$n8)
 case 3:q=c.a
 s=1
 break
@@ -38894,7 +38894,7 @@ if(o==null)o=$.dw=new A.hv()
 o.eo(n.bN$)
 o=t.z
 s=3
-return A.O(p.as.yW(0,"http://209.145.51.190:3123"+a,null,b,null,null,A.awn("POST",A.ayc(A.a9(["Authorization","Bearer "+A.h(J.aG(n.e7$,"token"))],t.N,o))),null,o),$async$m7)
+return A.O(p.as.yW(0,"https://chatapi.vienvu.com"+a,null,b,null,null,A.awn("POST",A.ayc(A.a9(["Authorization","Bearer "+A.h(J.aG(n.e7$,"token"))],t.N,o))),null,o),$async$m7)
 case 3:q=d.a
 s=1
 break
