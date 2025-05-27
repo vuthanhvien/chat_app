@@ -1,4 +1,5 @@
 import 'package:chat_app/api.dart';
+import 'package:chat_app/models/types.dart';
 import 'package:chat_app/screens/main.dart';
 import 'package:chat_app/socket.dart';
 import 'package:flutter/material.dart';
