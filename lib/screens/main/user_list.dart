@@ -16,23 +16,34 @@ class UserList extends StatelessWidget {
           final user = ctr.users[index];
           return InkWell(
             onTap: () {
-              ctr.addRoom(
-                'user ${user.name}',
-                newId: user.id,
-              ); // Create a new room with the user
+              final existingRoom = ctr.rooms.firstWhereOrNull((room) =>
+                  room.type == 'user' &&
+                  room.userRoom.firstWhereOrNull((u) => u.userId == user.id) !=
+                      null);
+              if (existingRoom != null) {
+                ctr.openChat(existingRoom); // Open existing room
+              } else {
+                // Create a new room if it doesn't exist
+                ctr.addRoom(
+                  'user ${user.name}',
+                  newId: user.id,
+                );
+              }
             },
             child: Container(
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade300),
+                  bottom: BorderSide(
+                    color: Colors.white.withOpacity(0.1),
+                  ),
                 ),
               ),
               child: Row(
                 children: [
                   CircleAvatar(
                     backgroundImage: NetworkImage(user.avatarUrl ?? ''),
-                    radius: 20,
+                    radius: 14,
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -41,19 +52,19 @@ class UserList extends StatelessWidget {
                       children: [
                         Text(
                           user.name,
-                          style: const TextStyle(fontSize: 14),
+                          style: const TextStyle(fontSize: 12),
                         ),
                         if (user.status == 'online')
                           const Text(
                             'Online',
-                            style: TextStyle(color: Colors.green, fontSize: 12),
+                            style: TextStyle(color: Colors.green, fontSize: 10),
                           )
                         else
                           const Text(
                             'Last seen ',
                             style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 12,
+                              fontSize: 10,
                             ),
                           ),
                       ],

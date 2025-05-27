@@ -14,7 +14,7 @@ class ChatController extends GetxController {
   final titleController = TextEditingController();
 
   final rooms = <IRoom>[].obs;
-  List<IRoom> get roomLists => rooms.where((e) => e.type == 'group').toList();
+  List<IRoom> get roomGroup => rooms.where((e) => e.type == 'group').toList();
   final room = IRoom.fromJson({}).obs; // Initialize with an empty room
   final users = <IUser>[].obs;
 
@@ -56,8 +56,11 @@ class ChatController extends GetxController {
   ];
 
   final messageList = <IMessage>[].obs;
-  List<IMessage> get messages =>
-      messageList.where((message) => message.roomId == room.value.id).toList();
+  List<IMessage> get messages => messageList
+      .where((message) => message.roomId == room.value.id)
+      .toList()
+      .reversed
+      .toList();
 
   final textController = TextEditingController();
   final listMessageCtr = ScrollController();
@@ -90,13 +93,19 @@ class ChatController extends GetxController {
     newMessage.value = '';
     textController.clear();
     // Scroll to the bottom of the message list
-    if (listMessageCtr.hasClients) {
-      listMessageCtr.animateTo(
-        listMessageCtr.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    // if (listMessageCtr.hasClients) {
+    //   listMessageCtr.animateTo(
+    //     listMessageCtr.position.maxScrollExtent,
+    //     duration: const Duration(milliseconds: 300),
+    //     curve: Curves.easeOut,
+    //   );
+    // }
+  }
+
+  attachFile(IRoom room) {
+    Get.snackbar('Info', 'Feature not implemented yet');
+    // Implement file attachment logic here
+    // You can use a file picker to select files and then send them to the server
   }
 
   addUsers() {

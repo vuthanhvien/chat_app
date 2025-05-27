@@ -20,6 +20,7 @@ class RoomDetail extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
             border: Border(
               bottom: BorderSide(color: const Color.fromARGB(255, 18, 18, 18)),
             ),
@@ -95,39 +96,91 @@ class RoomDetail extends StatelessWidget {
           child: MessageList(),
         ),
         Container(
-          color: Colors.white,
           width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          margin: const EdgeInsets.all(8.0),
           child: Container(
             width: min(Get.width - 300, 900),
             padding: const EdgeInsets.all(8.0),
-            child: Row(
+            child: Column(
               children: [
-                Expanded(
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Type a message',
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      ctr.newMessage.value = value;
-                    },
-                    controller: ctr.textController,
-                    // onSubmitted: (value) {
-                    //   ctr.submitMessage(room, value);
-                    //   // Handle send message
-                    // },
-                    onEditingComplete: () {
-                      ctr.submitMessage(room, ctr.newMessage.value);
-                    },
+                Container(
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            hintText: 'Type a message',
+                            border: InputBorder.none,
+                          ),
+                          onChanged: (value) {
+                            ctr.newMessage.value = value;
+                          },
+                          controller: ctr.textController,
+                          onEditingComplete: () {
+                            ctr.submitMessage(room, ctr.newMessage.value);
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: () {
+                          ctr.submitMessage(room, ctr.newMessage.value);
+                          // Handle send message
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    ctr.submitMessage(room, ctr.newMessage.value);
-                    // Handle send message
-                  },
-                ),
+                Container(
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.attach_file,
+                          size: 14,
+                        ),
+                        onPressed: () {
+                          ctr.attachFile(room);
+                          // Handle file attachment
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.camera_alt,
+                          size: 14,
+                        ),
+                        onPressed: () {
+                          // Handle camera capture
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.mic,
+                          size: 14,
+                        ),
+                        onPressed: () {
+                          // Handle voice message
+                        },
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.more_vert,
+                          size: 14,
+                        ),
+                        onPressed: () {
+                          // Handle more options
+                        },
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           ),

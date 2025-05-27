@@ -14,7 +14,7 @@ class ListChat extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: ctr.rooms.length,
+              itemCount: ctr.roomGroup.length,
               itemBuilder: (context, index) {
                 final room = ctr.rooms[index];
                 return Room(room: room);

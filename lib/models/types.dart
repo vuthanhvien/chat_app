@@ -26,6 +26,7 @@ class IRoom {
   final String type; // Default type for group chat
 
   final List<IUserRoom> userRoom;
+  List<IUser> users;
 
   IRoom({
     required this.id,
@@ -33,6 +34,7 @@ class IRoom {
     this.description = '',
     required this.type,
     required this.userRoom,
+    this.users = const [],
   });
 
   factory IRoom.fromJson(Map<String, dynamic> json) {

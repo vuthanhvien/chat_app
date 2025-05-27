@@ -11,6 +11,7 @@ class MessageList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => ListView.builder(
+        reverse: true,
         itemCount: ctr.messages.length,
         controller: ctr.listMessageCtr,
         itemBuilder: (context, index) {
@@ -27,37 +28,51 @@ class MessageList extends StatelessWidget {
               message.senderId == AuthController.to.currentUser.value.id;
 
           return Container(
-            margin: const EdgeInsets.only(bottom: 4),
+            margin: const EdgeInsets.only(bottom: 4, left: 8, right: 8),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment:
+                  isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
               children: [
                 if (!isMe)
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.blueGrey,
-                      borderRadius: BorderRadius.circular(20),
+                  if (isSameSender)
+                    const SizedBox(width: 40) // Placeholder for alignment
+                  else
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 18,
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                  ),
+                const SizedBox(width: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Container(
                       padding: const EdgeInsets.all(8.0),
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 31, 162, 228),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8.0),
-                          topRight: Radius.circular(8.0),
-                          bottomLeft: Radius.circular(8.0),
-                        ),
-                      ),
+                      decoration: isMe
+                          ? const BoxDecoration(
+                              color: Color.fromARGB(255, 31, 162, 228),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(12.0),
+                                topRight: Radius.circular(8.0),
+                                bottomLeft: Radius.circular(8.0),
+                              ),
+                            )
+                          : const BoxDecoration(
+                              color: Color.fromARGB(255, 31, 162, 228),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(8.0),
+                                topRight: Radius.circular(12.0),
+                                bottomRight: Radius.circular(8.0),
+                              ),
+                            ),
                       child: Text(
                         message.content,
                         overflow: TextOverflow.ellipsis,
@@ -72,19 +87,22 @@ class MessageList extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 if (isMe)
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.blueGrey,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                  )
+                  if (isSameSender)
+                    const SizedBox(width: 40) // Placeholder for alignment
+                  else
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                    )
               ],
             ),
           );
