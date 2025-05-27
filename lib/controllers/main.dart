@@ -35,6 +35,10 @@ class ChatController extends GetxController {
     rooms.removeWhere((room) => room.id == id);
   }
 
+  updateRoomName(String id, String name) {
+    API.to.postData('/rooms/update', {'id': id, 'name': name});
+  }
+
   void openChat(IRoom r) {
     room.value = r;
     getMessages();

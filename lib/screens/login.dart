@@ -104,17 +104,17 @@ class LoginPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (ctr.formCode.value == 'login')
-                const Text(
-                  'Login to Chat App',
+                Text(
+                  'LOGIN_CHAT-APP'.tr,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               if (ctr.formCode.value == 'register')
-                const Text(
-                  'Register to Chat App',
+                Text(
+                  'REGISTER_CHAT-APP'.tr,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               const SizedBox(height: 20),
-              const Text('Email'),
+              Text('EMAIL'.tr),
               TextField(
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -126,12 +126,12 @@ class LoginPage extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 10),
-              const Text('Password'),
+              Text('PASSWORD'.tr),
               TextField(
                 obscureText: true,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Enter your password',
+                  hintText: 'ENTER_YOUR_PASSWORD'.tr,
                 ),
                 onChanged: (value) {
                   ctr.password.value = value;
@@ -140,12 +140,12 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               if (ctr.formCode.value == 'register') ...[
-                const Text('Password (Confirm)'),
+                Text('CONFIRM_PASSWORD'.tr),
                 TextField(
                   obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'Enter your password',
+                    hintText: 'ENTER_YOUR_PASSWORD_CONFIRM'.tr,
                   ),
                   onChanged: (value) {
                     ctr.passwordConfirm.value = value;
@@ -157,7 +157,7 @@ class LoginPage extends StatelessWidget {
                   onPressed: () {
                     ctr.register();
                   },
-                  child: const Text('Register'),
+                  child: Text('REGISTER'.tr),
                 ),
               ],
               if (ctr.formCode.value == 'login') ...[
@@ -165,33 +165,33 @@ class LoginPage extends StatelessWidget {
                   onPressed: () {
                     ctr.login();
                   },
-                  child: const Text('Login'),
+                  child: Text('LOGIN'.tr),
                 ),
               ],
               const SizedBox(height: 10),
               if (ctr.formCode.value == 'login')
                 Row(
                   children: [
-                    const Text('Don\'t have an account?'),
+                    Text('DO_NOT_HAVE_ACCOUNT?'.tr),
                     TextButton(
                       onPressed: () {
                         ctr.formCode.value = 'register';
                         // Handle registration
                       },
-                      child: const Text('Register'),
+                      child: Text('REGISTER'.tr),
                     ),
                   ],
                 ),
               if (ctr.formCode.value == 'register')
                 Row(
                   children: [
-                    const Text('Already have an account?'),
+                    Text('DID_HAVE_ACCOUNT?'.tr),
                     TextButton(
                       onPressed: () {
                         ctr.formCode.value = 'login';
                         // Handle login
                       },
-                      child: const Text('Login'),
+                      child: Text('LOGIN'.tr),
                     ),
                   ],
                 ),

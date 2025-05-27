@@ -39,15 +39,28 @@ class RoomDetail extends StatelessWidget {
                           child: TextField(
                             decoration: const InputDecoration(
                               hintText: 'Enter room name',
-                              border: InputBorder.none,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
+                              ),
+                              contentPadding: EdgeInsets.all(8.0),
                             ),
                             controller: ctr.titleController,
+                            onEditingComplete: () {
+                              ctr.isEditTitle.value = false;
+                              ctr.updateRoomName(
+                                room.id,
+                                ctr.titleController.text,
+                              );
+                            },
                           ),
                         ),
                       if (!ctr.isEditTitle.value)
                         InkWell(
                           onTap: () {
                             ctr.isEditTitle.value = true;
+                            ctr.titleController.text = room.name;
                           },
                           child: Text(
                             '${room.name}',
