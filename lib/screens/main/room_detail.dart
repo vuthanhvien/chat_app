@@ -39,7 +39,7 @@ class RoomDetail extends StatelessWidget {
                           width: 200,
                           child: TextField(
                             decoration: const InputDecoration(
-                              hintText: 'Enter room name',
+                              hintText: 'Nhập tên nhóm',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(8.0),
@@ -147,7 +147,6 @@ class RoomDetail extends StatelessWidget {
                         ),
                         onPressed: () {
                           ctr.attachFile(room);
-                          // Handle file attachment
                         },
                       ),
                       IconButton(
