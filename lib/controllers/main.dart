@@ -252,6 +252,29 @@ class ChatController extends GetxController {
       }
       if (!isExits) {
         messageList.add(message);
+        Get.closeAllSnackbars();
+        Get.snackbar(
+          'New Message',
+          'You have a new message in ${message.content}',
+          duration: const Duration(seconds: 1),
+          snackPosition: SnackPosition.TOP,
+          onTap: (snack) {
+            openChat(
+              rooms.firstWhereOrNull((room) => room.id == message.roomId) ??
+                  IRoom.fromJson({}),
+            );
+          },
+          backgroundColor: Colors.blue.withOpacity(0.8),
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(10),
+          borderRadius: 10,
+          maxWidth: 300,
+          animationDuration: const Duration(milliseconds: 100),
+          icon: const Icon(
+            Icons.message,
+            color: Colors.white,
+          ),
+        );
       }
     });
 
