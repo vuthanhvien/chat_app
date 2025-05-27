@@ -24,8 +24,13 @@ class ChatController extends GetxController {
       'description': 'This is a new chat room',
       'userId': newId
     }).then((response) {
-      // rooms.add(IRoom.fromJson(response));
-      // openChat(rooms.last);
+      final newRoom = IRoom.fromJson(response);
+      final isExits = rooms.any((r) => r.id == newRoom.id);
+      if (!isExits) {
+        rooms.add(newRoom);
+      }
+
+      openChat(newRoom);
     }).catchError((error) {
       Get.snackbar('Error', 'Failed to create room: $error');
     });
