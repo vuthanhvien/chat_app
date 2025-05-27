@@ -33,6 +33,7 @@ class IRoom {
   final String id;
   final String name;
   final String description;
+  final String type; // Default type for group chat
 
   final List<IUserRoom> userRoom;
 
@@ -40,6 +41,7 @@ class IRoom {
     required this.id,
     required this.name,
     this.description = '',
+    required this.type,
     required this.userRoom,
   });
 
@@ -52,6 +54,7 @@ class IRoom {
               ?.map<IUserRoom>((e) => IUserRoom.fromJson(e))
               .toList() ??
           [],
+      type: json['type'] ?? 'group', // Default to 'group' if not provided
     );
   }
 
@@ -60,6 +63,8 @@ class IRoom {
       'id': id,
       'name': name,
       'description': description,
+      'type': type,
+      'UserRoom': userRoom.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -168,6 +173,7 @@ class ChatController extends GetxController {
   static ChatController get to => Get.put(ChatController());
 
   final rooms = <IRoom>[].obs;
+  List<IRoom> get roomLists => rooms.where((e) => e.type == 'group').toList();
   final room = IRoom.fromJson({}).obs; // Initialize with an empty room
   final users = <IUser>[].obs;
 
@@ -352,6 +358,16 @@ class ChatController extends GetxController {
       // openChat(room); // Automatically open the new room
     });
   }
+
+  // void listenToWidthChanges() {
+  //   Get.width.listen((width) {
+  //     if (width < 600) {
+  //       leftWidth.value = 0; // Hide left side on small screens
+  //     } else {
+  //       leftWidth.value = 300; // Show left side on larger screens
+  //     }
+  //   });
+  // }
 }
 
 class MainScreen extends StatelessWidget {
@@ -558,11 +574,28 @@ class MessageList extends StatelessWidget {
               index > 0 ? ctr.messages[index - 1] : IMessage.fromJson({});
           final isSameSender = beforeMessage.senderId == message.senderId;
 
+          final isMe =
+              message.senderId == AuthController.to.currentUser.value.id;
+
           return Container(
-            padding: const EdgeInsets.all(8.0),
+            margin: const EdgeInsets.only(bottom: 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                if (!isMe)
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.blueGrey,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -586,19 +619,10 @@ class MessageList extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Text(
-                    //   '${message.time}',
-                    //   style: const TextStyle(
-                    //     color: Colors.grey,
-                    //     fontSize: 12,
-                    //   ),
-                    // ),
                   ],
                 ),
                 const SizedBox(width: 8),
-                if (isSameSender)
-                  const SizedBox(width: 40) // Space for the avatar
-                else
+                if (isMe)
                   Container(
                     width: 40,
                     height: 40,
@@ -611,7 +635,7 @@ class MessageList extends StatelessWidget {
                       color: Colors.white,
                       size: 18,
                     ),
-                  ),
+                  )
               ],
             ),
           );
