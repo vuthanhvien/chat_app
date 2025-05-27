@@ -1,3 +1,4 @@
+import 'package:chat_app/api.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:get/get.dart';
 
@@ -14,7 +15,7 @@ class SocketService extends GetxService {
 
   void connect() {
     print('Connecting to socket server...');
-    socket = IO.io('http://localhost:4000', <String, dynamic>{
+    socket = IO.io(socketURL, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': true,
     });

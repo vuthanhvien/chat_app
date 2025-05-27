@@ -177,8 +177,8 @@ class ChatController extends GetxController {
       'description': 'This is a new chat room',
       'userId': newId
     }).then((response) {
-      rooms.add(IRoom.fromJson(response));
-      openChat(rooms.last);
+      // rooms.add(IRoom.fromJson(response));
+      // openChat(rooms.last);
     }).catchError((error) {
       Get.snackbar('Error', 'Failed to create room: $error');
     });
@@ -327,22 +327,27 @@ class ChatController extends GetxController {
 
     SocketService.to.onMessage((data) {
       final message = IMessage.fromJson(data);
-      var isExit = false;
+      var isExits = false;
       for (var m in messageList) {
         if (m.id == message.id) {
-          isExit = true; // Message already exists, update it
+          isExits = true; // Message already exists, update it
           m.status = 'sent'; // Update the status of the sent message
         }
         messageList.refresh();
       }
-      if (!isExit) {
+      if (!isExits) {
         messageList.add(message);
       }
     });
 
     SocketService.to.onRoomAdd((data) {
       final room = IRoom.fromJson(data);
-      rooms.add(room);
+      final index = rooms.indexWhere((r) => r.id == room.id);
+      if (index != -1) {
+        rooms[index] = room; // Update existing room
+      } else {
+        rooms.add(room); // Add new room
+      }
       rooms.refresh();
       // openChat(room); // Automatically open the new room
     });
@@ -475,13 +480,6 @@ class UserList extends StatelessWidget {
           final user = ctr.users[index];
           return InkWell(
             onTap: () {
-              // ctr.room.value = IRoom(
-              //   id: const Uuid().v4(),
-              //   name: user.name,
-              //   description: 'Chat with ${user.name}',
-              //   userRoom: [],
-              // );
-              // ctr.openChat(ctr.room.value);
               ctr.addRoom(
                 'user ${user.name}',
                 newId: user.id,
