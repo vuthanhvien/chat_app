@@ -115,6 +115,8 @@ class IMessage {
   String status; // 'sending', 'sent', 'delivered', 'read'
   DateTime timestamp;
 
+  String type;
+
   IMessage({
     required this.id,
     required this.content,
@@ -122,6 +124,7 @@ class IMessage {
     required this.roomId,
     required this.timestamp,
     this.status = 'sent',
+    this.type = 'text',
   });
 
   String get time => DateTime.now().difference(timestamp).inMinutes < 60
@@ -136,6 +139,7 @@ class IMessage {
       senderId: json['senderId'] ?? '',
       status: json['status'] ?? 'sending',
       roomId: json['roomId'] ?? '',
+      type: json['type'] ?? 'text',
       timestamp:
           DateTime.parse(json['timestamp'] ?? DateTime.now().toIso8601String()),
     );
@@ -149,6 +153,7 @@ class IMessage {
       'senderId': senderId,
       'status': status,
       'roomId': roomId,
+      'type': type,
       'timestamp': timestamp.toIso8601String(),
     };
   }

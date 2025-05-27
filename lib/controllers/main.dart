@@ -4,6 +4,7 @@ import 'package:chat_app/screens/login.dart';
 import 'package:chat_app/socket.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatController extends GetxController {
@@ -110,7 +111,46 @@ class ChatController extends GetxController {
   }
 
   attachFile(IRoom room) {
-    Get.snackbar('Info', 'Feature not implemented yet');
+    // Get.snackbar('Info', 'Feature not implemented yet');
+    final picker = ImagePicker();
+    print(picker);
+    // Use the ImagePicker to select fi
+    picker
+        .pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 800,
+      maxHeight: 800,
+      imageQuality: 80,
+      // You can also use ImageSource.camera for taking a new photo
+    )
+        .then((image) {
+      // Here you can handle the selected images
+      // For example, you can upload them to the server
+      // and then create a message with the image URL
+      final randomId = const Uuid().v4();
+      final message = IMessage(
+        id: randomId,
+        content: '2132132',
+        senderId: AuthController.to.currentUser.value.id,
+        roomId: room.id,
+        status: 'sending',
+        timestamp: DateTime.now(),
+        type: 'image',
+        // imageUrl:
+        //     image.path, // Assuming you handle the upload and get the URL
+      );
+      // messageList.add(message);
+      // messageList.refresh();
+      API.to.postData('/messages', {
+        'id': randomId,
+        'content': 'Image attached',
+        'roomId': room.id,
+        'type': 'image',
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+    }).catchError((error) {
+      Get.snackbar('Error', 'Failed to pick images: $error');
+    });
     // Implement file attachment logic here
     // You can use a file picker to select files and then send them to the server
   }

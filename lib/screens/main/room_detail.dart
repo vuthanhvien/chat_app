@@ -242,6 +242,7 @@ class RoomDetail extends StatelessWidget {
                           size: 14,
                         ),
                         onPressed: () {
+                          ctr.attachFile(room);
                           // Handle camera capture
                         },
                       ),
@@ -251,6 +252,8 @@ class RoomDetail extends StatelessWidget {
                           size: 14,
                         ),
                         onPressed: () {
+                          ctr.attachFile(room);
+
                           // Handle voice message
                         },
                       ),
