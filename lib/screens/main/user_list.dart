@@ -1,9 +1,11 @@
 import 'package:chat_app/controllers/main.dart';
+import 'package:chat_app/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class UserList extends StatelessWidget {
   final ctr = ChatController.to;
+  final authCtr = AuthController.to;
 
   UserList({super.key});
 
@@ -25,7 +27,7 @@ class UserList extends StatelessWidget {
               } else {
                 // Create a new room if it doesn't exist
                 ctr.addRoom(
-                  'user ${user.name}',
+                  '${user.name} - ${authCtr.currentUser.value.name}',
                   newId: user.id,
                 );
               }

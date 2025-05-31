@@ -2,7 +2,6 @@ import 'package:chat_app/api.dart';
 import 'package:chat_app/models/types.dart';
 import 'package:chat_app/screens/login.dart';
 import 'package:chat_app/socket.dart';
-import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -47,7 +46,6 @@ class ChatController extends GetxController {
 
   void openChat(IRoom r) {
     room.value = r;
-    Get.toNamed('/chat?roomId=${r.id}', preventDuplicates: false);
     getMessages();
   }
 

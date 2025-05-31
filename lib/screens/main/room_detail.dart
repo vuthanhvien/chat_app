@@ -119,12 +119,6 @@ class RoomDetail extends StatelessWidget {
                                     title: Text(user.name),
                                     // subtitle: Text(user.status),
                                     onTap: () {
-                                      // // Add user to room logic
-                                      // ctr.addRoom(
-                                      //   room.name,
-                                      //   newId: user.id,
-                                      // );
-                                      // Get.back();
                                       if (ctr.userSelected.contains(user.id)) {
                                         ctr.userSelected.remove(user.id);
                                       } else {

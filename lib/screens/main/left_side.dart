@@ -40,7 +40,7 @@ class LeftSide extends StatelessWidget {
                     ),
                     onPressed: () {
                       ctr.sreenView.value = ListCode.room;
-                      ctr.addRoom('New Room ${ctr.rooms.length + 1}');
+                      ctr.addRoom('Nhóm ${ctr.rooms.length + 1}');
                     },
                   ),
                 ],
