@@ -57,7 +57,6 @@ class MessageList extends StatelessWidget {
                   children: [
                     if (message.type == 'image')
                       Container(
-                        padding: const EdgeInsets.all(8.0),
                         decoration: isMe
                             ? const BoxDecoration(
                                 color: Color.fromARGB(255, 31, 162, 228),
