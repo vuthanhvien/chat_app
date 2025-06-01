@@ -16,7 +16,7 @@ class ListChat extends StatelessWidget {
             child: ListView.builder(
               itemCount: ctr.roomGroup.length,
               itemBuilder: (context, index) {
-                final room = ctr.rooms[index];
+                final room = ctr.roomGroup[index];
                 return Room(room: room);
               },
             ),
@@ -76,8 +76,10 @@ class Room extends StatelessWidget {
                         // fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Text(
-                      'Last message here', // Placeholder for last message
+                    Text(room.type),
+                    Text(
+                      room.lastMessageText ??
+                          '', // Placeholder for last message
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 10,

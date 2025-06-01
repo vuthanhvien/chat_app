@@ -1,6 +1,6 @@
 class IUserRoom {
-  final String userId;
-  final String roomId;
+  String userId;
+  String roomId;
 
   IUserRoom({required this.userId, required this.roomId});
 
@@ -20,13 +20,16 @@ class IUserRoom {
 }
 
 class IRoom {
-  final String id;
-  final String name;
-  final String description;
-  final String type; // Default type for group chat
+  String id;
+  String name;
+  String description;
+  String type; // Default type for group chat
 
-  final List<IUserRoom> userRoom;
-  List<IUser> users;
+  List<IUserRoom> userRoom;
+  // List<IUser> users;
+
+  String? lastMessageText;
+  DateTime? lastMessageAt;
 
   IRoom({
     required this.id,
@@ -34,7 +37,9 @@ class IRoom {
     this.description = '',
     required this.type,
     required this.userRoom,
-    this.users = const [],
+    // this.users = const [],
+    this.lastMessageText,
+    this.lastMessageAt,
   });
 
   factory IRoom.fromJson(Map<String, dynamic> json) {
@@ -46,6 +51,10 @@ class IRoom {
               ?.map<IUserRoom>((e) => IUserRoom.fromJson(e))
               .toList() ??
           [],
+      lastMessageText: json['lastMessageText'],
+      lastMessageAt: json['lastMessageAt'] != null
+          ? DateTime.parse(json['lastMessageAt'] as String)
+          : null,
       type: json['type'] ?? 'group', // Default to 'group' if not provided
     );
   }
@@ -137,7 +146,7 @@ class IMessage {
       roomId: json['roomId'] ?? '',
       type: json['type'] ?? 'text',
       timestamp:
-          DateTime.parse(json['timestamp'] ?? DateTime.now().toIso8601String()),
+          DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 

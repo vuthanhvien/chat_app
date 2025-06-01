@@ -175,12 +175,15 @@ class AuthController extends GetxController {
       getMe(); // Fetch user data if token exists
     } else {
       isLogin.value = false;
+      getting.value = false; // No token, so not getting user data
     }
   }
 }
 
 class LoginPage extends StatelessWidget {
   final ctr = AuthController.to;
+
+  LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -204,13 +207,13 @@ class LoginPage extends StatelessWidget {
                     if (ctr.formCode.value == 'login')
                       Text(
                         'Đăng Nhập APP '.toUpperCase(),
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                     if (ctr.formCode.value == 'register')
                       Text(
                         'Đăng Ký APP '.toUpperCase(),
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                     const SizedBox(height: 20),
@@ -228,8 +231,8 @@ class LoginPage extends StatelessWidget {
                           hintText: 'Nhập email'.tr,
                           focusedBorder: InputBorder.none,
                           contentPadding:
-                              EdgeInsets.symmetric(horizontal: 10.0),
-                          hintStyle: TextStyle(color: Colors.white70),
+                              const EdgeInsets.symmetric(horizontal: 10.0),
+                          hintStyle: const TextStyle(color: Colors.white70),
                         ),
                         onChanged: (value) {
                           ctr.username.value = value;
@@ -252,8 +255,8 @@ class LoginPage extends StatelessWidget {
                           hintText: 'Nhập mật khẩu'.tr,
                           focusedBorder: InputBorder.none,
                           contentPadding:
-                              EdgeInsets.symmetric(horizontal: 10.0),
-                          hintStyle: TextStyle(color: Colors.white70),
+                              const EdgeInsets.symmetric(horizontal: 10.0),
+                          hintStyle: const TextStyle(color: Colors.white70),
                         ),
                         obscureText: true,
                         onChanged: (value) {
@@ -266,7 +269,7 @@ class LoginPage extends StatelessWidget {
                     if (ctr.errorText.value.isNotEmpty)
                       Text(
                         ctr.errorText.value,
-                        style: TextStyle(color: Colors.red),
+                        style: const TextStyle(color: Colors.red),
                       ),
                     const SizedBox(height: 20),
                     if (ctr.formCode.value == 'register') ...[
@@ -274,7 +277,7 @@ class LoginPage extends StatelessWidget {
                       TextField(
                         obscureText: true,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                           hintText: ''.tr,
                         ),
                         onChanged: (value) {
@@ -323,7 +326,7 @@ class LoginPage extends StatelessWidget {
                               ctr.formCode.value = 'login';
                               // Handle login
                             },
-                            child: Text('ĐĂNG NHẬP'),
+                            child: const Text('ĐĂNG NHẬP'),
                           ),
                         ],
                       ),
@@ -337,7 +340,7 @@ class LoginPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Sử dụng tư cách khách'.tr),
-                        Container(
+                        SizedBox(
                           width: 100,
                           child: Button(
                             text: 'Khách'.tr,

@@ -21,8 +21,8 @@ class ChatController extends GetxController {
   void addRoom(String name, {String? newId}) {
     API.to.postData('/rooms', {
       'name': name,
-      'description': 'This is a new chat room',
-      'userId': newId
+      'description': '',
+      'userId': newId,
     }).then((response) {
       final newRoom = IRoom.fromJson(response);
       final isExits = rooms.any((r) => r.id == newRoom.id);
@@ -96,14 +96,6 @@ class ChatController extends GetxController {
 
     newMessage.value = '';
     textController.clear();
-    // Scroll to the bottom of the message list
-    // if (listMessageCtr.hasClients) {
-    //   listMessageCtr.animateTo(
-    //     listMessageCtr.position.maxScrollExtent,
-    //     duration: const Duration(milliseconds: 300),
-    //     curve: Curves.easeOut,
-    //   );
-    // }
   }
 
   attachFile(IRoom room) {
@@ -120,31 +112,58 @@ class ChatController extends GetxController {
       // You can also use ImageSource.camera for taking a new photo
     )
         .then((image) {
-      // Here you can handle the selected images
-      // For example, you can upload them to the server
-      // and then create a message with the image URL
       final randomId = const Uuid().v4();
-      final message = IMessage(
-        id: randomId,
-        content: '2132132',
-        senderId: AuthController.to.currentUser.value.id,
-        roomId: room.id,
-        status: 'sending',
-        timestamp: DateTime.now(),
-        type: 'image',
-        // imageUrl:
-        //     image.path, // Assuming you handle the upload and get the URL
-      );
+
+      // update message
+      // uploadiamge
+      if (image == null) {
+        Get.snackbar('Error', 'No image selected');
+        return;
+      }
+
+      API.to.uploadFile(image).then((res) {
+        print(res);
+        final imageUrl = baseURL + '/' + res['path'];
+
+        // final message = IMessage(
+        //   id: randomId,
+        //   content: imageUrl, // Assuming you handle the upload and get the URL
+        //   senderId: AuthController.to.currentUser.value.id,
+        //   roomId: room.id,
+        //   status: 'sending',
+        //   timestamp: DateTime.now(),
+        //   type: 'image',
+        //   // imageUrl: imageUrl, // Set the image URL in the message
+        // );
+        // messageList.add(message);
+        // messageList.refresh();
+
+        API.to.postData('/messages', {
+          'id': randomId,
+          'content': imageUrl,
+          'roomId': room.id,
+          'type': 'image',
+        });
+      }).catchError((error) {
+        print('Error picking image: $error');
+        Get.snackbar('Error', 'Failed to upload image: $error');
+      });
+
+      // final message = IMessage(
+      //   id: randomId,
+      //   content: '2132132',
+      //   senderId: AuthController.to.currentUser.value.id,
+      //   roomId: room.id,
+      //   status: 'sending',
+      //   timestamp: DateTime.now(),
+      //   type: 'image',
+      //   // imageUrl:
+      //   //     image.path, // Assuming you handle the upload and get the URL
+      // );
       // messageList.add(message);
       // messageList.refresh();
-      API.to.postData('/messages', {
-        'id': randomId,
-        'content': 'Image attached',
-        'roomId': room.id,
-        'type': 'image',
-        'timestamp': DateTime.now().toIso8601String(),
-      });
     }).catchError((error) {
+      print('Error picking image: $error');
       Get.snackbar('Error', 'Failed to pick images: $error');
     });
     // Implement file attachment logic here
@@ -244,9 +263,7 @@ class ChatController extends GetxController {
           isExits = true; // Message already exists, update it
           m.status = 'sent'; // Update the status of the sent message
         }
-        messageList.refresh();
       }
-      messageList.sort((b, a) => a.timestamp.compareTo(b.timestamp));
 
       if (!isExits) {
         messageList.add(message);
@@ -274,6 +291,8 @@ class ChatController extends GetxController {
           ),
         );
       }
+      messageList.sort((b, a) => a.timestamp.compareTo(b.timestamp));
+      messageList.refresh();
     });
 
     SocketService.to.onRoomAdd((data) {

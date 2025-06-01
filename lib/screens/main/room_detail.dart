@@ -205,6 +205,11 @@ class RoomDetail extends StatelessWidget {
                           onEditingComplete: () {
                             ctr.submitMessage(room, ctr.newMessage.value);
                           },
+                          maxLines: 3,
+                          // textInputAction: TextInputAction.send,
+                          // onSubmitted: (value) {
+                          //   ctr.submitMessage(room, value);
+                          // },
                         ),
                       ),
                       IconButton(

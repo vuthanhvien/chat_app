@@ -55,35 +55,63 @@ class MessageList extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: isMe
-                          ? const BoxDecoration(
-                              color: Color.fromARGB(255, 31, 162, 228),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(12.0),
-                                topRight: Radius.circular(8.0),
-                                bottomLeft: Radius.circular(8.0),
+                    if (message.type == 'image')
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: isMe
+                            ? const BoxDecoration(
+                                color: Color.fromARGB(255, 31, 162, 228),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(12.0),
+                                  topRight: Radius.circular(8.0),
+                                  bottomLeft: Radius.circular(8.0),
+                                ),
+                              )
+                            : const BoxDecoration(
+                                color: Color.fromARGB(255, 31, 162, 228),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8.0),
+                                  topRight: Radius.circular(12.0),
+                                  bottomRight: Radius.circular(8.0),
+                                ),
                               ),
-                            )
-                          : const BoxDecoration(
-                              color: Color.fromARGB(255, 31, 162, 228),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(8.0),
-                                topRight: Radius.circular(12.0),
-                                bottomRight: Radius.circular(8.0),
-                              ),
-                            ),
-                      child: Text(
-                        message.content,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                        child: Image.network(
+                          message.content,
+                          // width: 200,
+                          height: 200,
+                          // fit: BoxFit.cover,
                         ),
                       ),
-                    ),
+                    if (message.type == 'text')
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: isMe
+                            ? const BoxDecoration(
+                                color: Color.fromARGB(255, 31, 162, 228),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(12.0),
+                                  topRight: Radius.circular(8.0),
+                                  bottomLeft: Radius.circular(8.0),
+                                ),
+                              )
+                            : const BoxDecoration(
+                                color: Color.fromARGB(255, 31, 162, 228),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8.0),
+                                  topRight: Radius.circular(12.0),
+                                  bottomRight: Radius.circular(8.0),
+                                ),
+                              ),
+                        child: Text(
+                          message.content,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
                     Text(
                       DateFormat('hh:mm a').format(message.timestamp),
                       style: const TextStyle(
