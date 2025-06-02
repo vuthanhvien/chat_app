@@ -3,6 +3,7 @@ import 'package:chat_app/models/types.dart';
 import 'package:chat_app/screens/login.dart';
 import 'package:chat_app/socket.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
@@ -45,6 +46,10 @@ class ChatController extends GetxController {
   }
 
   void openChat(IRoom r) {
+    SystemNavigator.routeInformationUpdated(
+      uri: Uri.parse('?room=${r.id}'),
+    );
+
     room.value = r;
     getMessages();
   }
@@ -224,6 +229,21 @@ class ChatController extends GetxController {
         for (var room in rooms) {
           SocketService.to.joinRoom(room.id);
         }
+
+        final roomId = Get.parameters['room'];
+        if (roomId != null && roomId.isNotEmpty) {
+          final room = rooms.firstWhereOrNull((r) => r.id == roomId);
+          if (room != null) {
+            openChat(room);
+          } else {
+            Get.snackbar('Info', 'Room not found');
+          }
+        } else {
+          // Open the first room by default if no room is specified
+          if (rooms.isNotEmpty) {
+            openChat(rooms.first);
+          }
+        }
       } else {
         Get.snackbar('Error', 'Invalid response format');
       }
@@ -252,6 +272,7 @@ class ChatController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Initialize the controller and fetch initial data
     getRooms();
     getUsers();
 
